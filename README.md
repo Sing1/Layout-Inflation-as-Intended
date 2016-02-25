@@ -14,26 +14,26 @@ inflate(int resource, ViewGroup root)
 ```Java
 inflate(int resource, ViewGroup root, boolean attachToRoot)
 ```
- The first parameter points to the layout resource you want to inflate. The second parameter is the root view of the hierarchy you are inflating the resource to attach to. When the third parameter is present, it governs whether or not the inflated view is attached to the supplied root after inflation.
+The first parameter points to the layout resource you want to inflate. The second parameter is the root view of the hierarchy you are inflating the resource to attach to. When the third parameter is present, it governs whether or not the inflated view is attached to the supplied root after inflation.
 
 It is these last two parameters that can cause a bit of confusion. With the two parameter version of this method, LayoutInflater will automatically attempt to attach the inflated view to the supplied root. However, the framework has a check in place that if you pass null for the root it bypasses this attempt to avoid an application crash.
 
 Many developers take this behavior to mean that the proper way to disable attachment on inflation is by passing null as root; in many cases not even realizing that the three parameter version of inflate() exists. By doing things this way, we also disable another very important function the root view has…but I’m getting ahead of myself.
 ###Examples from the Framework
 Let’s examine some situations in Android where the framework expects you as a developer to interactively inflate portions of the view.
-Adapters are the most common case for using LayoutInflater is custom ListView adapters overriding getView(), which has the following method signature:
+**Adapters** are the most common case for using LayoutInflater is custom ListView adapters overriding getView(), which has the following method signature:
 ```Java
 getView(int position, View convertView, ViewGroup parent)
 ```
-Fragments also use inflation often when creating views via onCreateView(); notice its method signature:
+**Fragments** also use inflation often when creating views via onCreateView(); notice its method signature:
 ```Java
 onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 ```
- Have you noticed that every time the framework wants you to inflate a layout, they also pass you the parent ViewGroup it will eventually be attached to? Notice also that in most cases (including the above two examples), it will throw an Exception later on if LayoutInflater is allowed to automatically attach the inflated view to the root.
+Have you noticed that every time the framework wants you to inflate a layout, they also pass you the parent ViewGroup it will eventually be attached to? Notice also that in most cases (including the above two examples), it will throw an Exception later on if LayoutInflater is allowed to automatically attach the inflated view to the root.
 
 So why do you suppose we are given this ViewGroup if we are not supposed to attach to it? It turns out the parent view is a very important part of the inflation process because it is necessary in order to evaluate the LayoutParams declared in the root element of the XML being inflated. Passing nothing here is akin to telling the framework “I don’t know what parent this view will be attached to, sorry.”
 
-The problem with this is android:layout_xxx attributes are always be evaluated in the context of the parent view. As a result, without any known parent, all LayoutParams you declared on the root element of your XML tree will just get thrown away, and then you’ll be left asking “why is the framework ignoring the layout customizations I defined? I’d better check SO and then file a bug.”
+The problem with this is android:layout_xxx attributes are always be evaluated in the context of the parent view. **As a result, without any known parent, all LayoutParams you declared on the root element of your XML tree will just get thrown away**, and then you’ll be left asking “why is the framework ignoring the layout customizations I defined? I’d better check SO and then file a bug.”
 
 Without LayoutParams, the ViewGroup that eventually hosts the inflated layout is left to generate a default set for you. If you are lucky (and in many cases you are) these default parameters are the same as what you had in XML…masking the fact that something is amiss.
 ###Application Example
@@ -72,7 +72,7 @@ public View getView(int position, View convertView, ViewGroup parent) {
 }
 ```
 we end up with a result that looks like this
-１１１１１１１１１１１１１１１１１１１１１１１１１１１１１１
+![github](http://www.doubleencore.com/wp-content/uploads/2013/05/Image11-300x187.png "github")  
 What happened to the fixed height we set?? This is usually where you end up setting the fixed height on all your child views, switching the root elements height to wrap_content, and move on without really knowing why it broke (you may have even cursed at Google in the process).
 
 If we instead inflate the same layout this way
@@ -86,7 +86,7 @@ public View getView(int position, View convertView, ViewGroup parent) {
 }
 ```
 we end up with what we expected in the first place.
-１１１１１１１１１１１１１１１１１１１１１１１１１１１
+![github](http://www.doubleencore.com/wp-content/uploads/2013/05/Image21-300x187.png "github")  
 Hooray!
 ###Every Rule Has An Exception
 There are of course instances where you can truly justify a null parent during inflation, but they are few. One such instance occurs when you are inflating a custom layout to be attached to an AlertDialog. Consider the following example where we want to use our same XML layout but set it as the dialog view:
