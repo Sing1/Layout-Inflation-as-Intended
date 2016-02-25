@@ -20,7 +20,7 @@ It is these last two parameters that can cause a bit of confusion. With the two 
 
 Many developers take this behavior to mean that the proper way to disable attachment on inflation is by passing null as root; in many cases not even realizing that the three parameter version of inflate() exists. By doing things this way, we also disable another very important function the root view has…but I’m getting ahead of myself.
 ###Examples from the Framework
-Let’s examine some situations in Android where the framework expects you as a developer to interactively inflate portions of the view.
+Let’s examine some situations in Android where the framework expects you as a developer to interactively inflate portions of the view.<br/>
 **Adapters** are the most common case for using LayoutInflater is custom ListView adapters overriding getView(), which has the following method signature:
 ```Java
 getView(int position, View convertView, ViewGroup parent)
