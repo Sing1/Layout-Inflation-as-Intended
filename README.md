@@ -71,7 +71,7 @@ public View getView(int position, View convertView, ViewGroup parent) {
 　　return convertView;
 }
 ```
-we end up with a result that looks like this
+we end up with a result that looks like this<br/>
 ![github](http://www.doubleencore.com/wp-content/uploads/2013/05/Image11-300x187.png "github")  
 What happened to the fixed height we set?? This is usually where you end up setting the fixed height on all your child views, switching the root elements height to wrap_content, and move on without really knowing why it broke (you may have even cursed at Google in the process).
 
@@ -85,7 +85,7 @@ public View getView(int position, View convertView, ViewGroup parent) {
 　　return convertView;
 }
 ```
-we end up with what we expected in the first place.
+we end up with what we expected in the first place.<br/>
 ![github](http://www.doubleencore.com/wp-content/uploads/2013/05/Image21-300x187.png "github")  
 Hooray!
 ###Every Rule Has An Exception
